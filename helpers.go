@@ -42,7 +42,7 @@ func ClientInfo(clid string) ts3.Command {
 	return ts3.Command{
 		Command: "clientinfo",
 		Params: map[string][]string{
-			"clid": []string{"5"},
+			"clid": []string{clid},
 		},
 	}
 }
@@ -57,25 +57,35 @@ func ServerGroupDelClient(sgid string, cldbid string) ts3.Command {
 	}
 }
 
-func SendMessageChannel(isError bool, message string) ts3.Command {
-	if isError {
-		message = "'[B][COLOR=#ff0000]" + message + "[/B][/COLOR]"
+func ServerGroupAddClient(sgid string, cldbid string) ts3.Command {
+	return ts3.Command{
+		Command: "servergroupaddclient",
+		Params: map[string][]string{
+			"sgid":   []string{sgid},
+			"cldbid": []string{cldbid},
+		},
 	}
+}
+
+func SendMessageChannel(isError bool, message string) ts3.Command {
+	//if isError {
+	//	message = "'[B][COLOR=#ff0000]" + message + "[/COLOR][/B]"
+	//}
 
 	return ts3.Command{
 		Command: "sendtextmessage",
 		Params: map[string][]string{
 			"targetmode": []string{"2"},
 			"target":     []string{"1"},
-			"msg":        []string{message},
+			"msg":        []string{"Cockwomble"},
 		},
 	}
 }
 
 func SendMessageUser(isError bool, message string, clid string) ts3.Command {
-	if isError {
-		message = "'[B][COLOR=#ff0000]" + message + "[/B][/COLOR]"
-	}
+	//if isError {
+	//	message = "'[B][COLOR=#ff0000]" + message + "[/COLOR][/B]"
+	//}
 
 	return ts3.Command{
 		Command: "sendtextmessage",

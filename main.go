@@ -3,16 +3,17 @@ package main
 import (
 	"github.com/darfk/ts3"
 	"log"
+	"time"
 )
 
 // Username and password in Constants.go, not on github :D
 
 func processNotify(client *ts3.Client, notification chan ts3.Notification) {
 	for i := range notification {
-		//log.Println(i)
-		if i.Type == "notifyclientmoved" {
-			// We need to check for lock group
-			doLock(client, i.Params[0]["clid"])
+		switch i.Type {
+		case "notifyclientmoved", "notifycliententerview":
+			// We need to check for lock group on every move, and guest check is best done at the same time.
+			doLockandGuest(client, i.Params[0]["clid"])
 		}
 	}
 }
@@ -46,6 +47,18 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// Start listening to text chat
+	_, err = client.Exec(ts3.Command{
+		Command: "servernotifyregister",
+		Params: map[string][]string{
+			"event": []string{"textchannel"},
+			"id":    []string{"1"},
+		},
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	notification := make(chan ts3.Notification)
 
 	go processNotify(client, notification)
@@ -55,5 +68,6 @@ func main() {
 	})
 
 	for {
+		time.Sleep(500 * time.Millisecond)
 	}
 }
